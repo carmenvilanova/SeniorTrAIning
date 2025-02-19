@@ -5,3 +5,9 @@ Existen dos principales líneas de trabajo en la parte técnica del proyecto:
 
 1. Demo de la aplicación con streamlit: Carmen y Nacho
 2. Modelo de clasificación del nivel de deterioro cognitivo (se necesita un dataset sintético): Camilo y Óscar
+
+
+## Configuración inicial
+
+1. python database_setup.py #(genera el archivo .db necesario)
+2. streamlit run app.py
