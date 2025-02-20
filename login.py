@@ -25,16 +25,10 @@ def add_background_color():
     }
     
     .stButton>button {
-        color: white;
-        background-color: #062f6e;
-        font-family: "Raleway", Sans-serif;
         display: block;
         margin: 0 auto;
     }
-    div[data-testid="stImage"] {
-        display: block;
-        margin: 0 auto;
-    }
+
     </style>
     """
     st.markdown(background_color_html, unsafe_allow_html=True)

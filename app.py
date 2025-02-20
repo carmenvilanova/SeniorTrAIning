@@ -27,6 +27,13 @@ def main():
             if st.button("Volver"):
                 st.session_state['page'] = 'login'  
                 st.rerun()
+        elif st.session_state['page'] == 'reaccion':
+            st.write("Página de reaccion (en construcción)")  
+            if st.button("Volver"):
+                st.session_state['page'] = 'login'  
+                st.rerun()
+
+                
     else:
         if st.session_state['page'] == 'login':
             login.login_page()

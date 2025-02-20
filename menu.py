@@ -30,14 +30,10 @@ def home_page():
             width: 300px;
             height: 50px;
             font-size: 20px;
-            color: white;
-            background-color: #062f6e;
             border-radius: 10px;
             margin: 10px;
         }
-        .stButton>button:hover {
-            background-color: #6acfff;
-        }
+
         </style>
         """,
         unsafe_allow_html=True
@@ -47,7 +43,7 @@ def home_page():
     st.title("Bienvenido")
     st.subheader(f"👋 Hola, {st.session_state.get('username', 'Usuario')} 👋")
     st.subheader(f"🧠 Elige un juego 🧠")
-
+    st.write("---")
     # Botones de navegación
     col1, col2 = st.columns(2)
     with col1:
@@ -66,5 +62,9 @@ def home_page():
             st.session_state['page'] = 'reflejos'  # Cambia la página a 'reflejos'
             st.rerun()
     with col4:
-        if st.button("🚪 Cerrar Sesión"):
-            cerrar_sesion()
+        if st.button("Tiempo reacción"):
+            st.session_state['page'] = 'reaccion'  # Cambia la página a 'reflejos'
+            st.rerun()
+    st.write("---")
+    if st.button("🚪 Cerrar Sesión"):
+        cerrar_sesion()
