@@ -201,7 +201,7 @@ def generate_cog_state(time, accuracy, time_ref, accuracy_ref):
     
     random.seed(123)
 
-    if time > time_ref and accuracy < accuracy: 
+    if time > time_ref and accuracy < accuracy_ref: 
         probs = [0.75, 0.15, 0.1]
     elif time > time_ref and accuracy > accuracy_ref:
         probs = [0.6, 0.3, 0.1]
