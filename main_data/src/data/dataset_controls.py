@@ -21,6 +21,6 @@ def calculate_age(df: pd.DataFrame, birth_date_column: str):
     current_date = datetime.today()
 
     # Calculate the age for each person
-    df['Age'] = df[birth_date_column].apply(lambda birthdate: current_date.year - birthdate.year - ((current_date.month, current_date.day) < (birthdate.month, birthdate.day)))
+    df['age'] = df[birth_date_column].apply(lambda birthdate: current_date.year - birthdate.year - ((current_date.month, current_date.day) < (birthdate.month, birthdate.day)))
 
     return df

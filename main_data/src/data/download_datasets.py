@@ -41,8 +41,7 @@ def download_file_from_cloud(url: str, base_path: str):
             print("Error: The file could not be downloaded.")
     except Exception as e:
         print(f"Error during execution: {e}")
-import os
-import pandas as pd
+
 
 def opening_dataframes(file_ids: dict, base_path: str):
     """
