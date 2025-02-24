@@ -6,8 +6,7 @@ El proyecto se divide en dos principales líneas de trabajo:
 
 1. **Demo de la aplicación con Streamlit** 📲  
    * Responsables: *Carmen y Nacho*
-2. **Modelo de clasificación del nivel de deterioro cognitivo** 🧠  
-   * Se necesita un dataset sintético.
+2. **Generación de datos sintéticos y modelo de clasificación del nivel de deterioro cognitivo** 🧠  
    * Responsables: *Camilo y Óscar*
 
 ---
