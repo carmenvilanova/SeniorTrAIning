@@ -13,7 +13,7 @@ def cerrar_sesion():
     st.rerun()
 
 def home_page():
-    """Página de inicio con cuatro botones."""
+    """Página de inicio con dos categorías de juegos."""
     if not st.session_state.get('logged_in', False):
         st.warning("Por favor, inicie sesión para continuar.")
         return  # No permite acceso si no está logueado
@@ -33,7 +33,6 @@ def home_page():
             border-radius: 10px;
             margin: 10px;
         }
-
         </style>
         """,
         unsafe_allow_html=True
@@ -44,27 +43,31 @@ def home_page():
     st.subheader(f"👋 Hola, {st.session_state.get('username', 'Usuario')} 👋")
     st.subheader(f"🧠 Elige un juego 🧠")
     st.write("---")
-    # Botones de navegación
+
+    # Organización en dos columnas
     col1, col2 = st.columns(2)
+
+    # Juegos de Clasificación
     with col1:
-        if st.button("Emociones"):
-            st.session_state['page'] = 'emociones'  # Cambia la página a 'emociones'
+        st.header("🎯 Juegos de Clasificación")
+        st.write("Prueba tu estado cognitivo con estos desafiantes juegos de clasificación!")
+        if st.button("Clasificar Emociones"):
+            st.session_state['page'] = 'emociones'
             st.rerun()
-            
-    with col2:
-        if st.button("Cálculo"):
-            st.session_state['page'] = 'calculo'  # Cambia la página a 'calculo'
+        if st.button("Adivina el Año"):
+            st.session_state['page'] = 'adivinar_ano'
             st.rerun()
 
-    col3, col4 = st.columns(2)
-    with col3:
-        if st.button("Reflejos"):
-            st.session_state['page'] = 'reflejos'  # Cambia la página a 'reflejos'
+    # Juegos con IA Generativa
+    with col2:
+        st.header("🤖 Juegos con IA Generativa")
+        st.write("Revive el pasado con inteligencia artificial y descubre sorpresas del ayer!")
+        if st.button("Juego con IA"):
+            st.session_state['page'] = 'ia_juego'
             st.rerun()
-    with col4:
-        if st.button("Tiempo reacción"):
-            st.session_state['page'] = 'reaccion'  # Cambia la página a 'reflejos'
-            st.rerun()
+
     st.write("---")
+
+    # Botón de cerrar sesión
     if st.button("🚪 Cerrar Sesión"):
         cerrar_sesion()
