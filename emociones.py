@@ -38,7 +38,7 @@ def load_new_question():
 # Función decorada para cargar el modelo de Machine Learning
 @st.cache_data
 def cargar_modelo_y_vectorizador():
-    modelo = joblib.load('modelo.pkl')  # Carga el modelo
+    modelo = joblib.load('models/modelo.pkl')  # Carga el modelo
     return modelo
 
 
@@ -70,13 +70,31 @@ def load_emotions():
         
         # 📌 Preparar datos para ML
         corrects = st.session_state.correct_answers
-        avg_reaction_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
+        age=60
+        average_time = 0.86
+        education_level_High_School = 1
+        education_level_Primary_School = 0
+        education_level_University =0
+        gender_Female=0
 
-        df = pd.DataFrame([[corrects, avg_reaction_time]], columns=["Aciertos", "Tiempo de reacción"])
-        
+        gender_Male=1 
+        gender_Other=0
+        languages_spoken_1=0
+        languages_spoken_2  =1      
+        gender = 1
+        accuracy = corrects/10
+        average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
+
+        # df = pd.DataFrame([[age,average_time ,education_level_High_School,education_level_Primary_School, languages_spoken,gender, corrects]], columns=["Aciertos", "Tiempo de reacción"])
+        df = pd.DataFrame([[age,average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1,languages_spoken_2]], columns=[['age', 'average_time', 'accuracy', 'education_level_High School',
+        'education_level_Primary School', 'education_level_University',
+        'gender_Female', 'gender_Male', 'gender_Other', 'languages_spoken_1',
+        'languages_spoken_2']])
         # 📌 Predecir con el modelo
         nivel_cognitivo = st.session_state.ml_model.predict(df)[0]
-        
+        print(nivel_cognitivo)
+        print(st.session_state.ml_model.predict(df))
+        print(f"Probabilidad: {st.session_state.ml_model.predict_proba(df)}")
         st.success("🎉 ¡Juego Completado!")
         st.write(f"✅ Aciertos: {corrects}/10")
         st.write(f"⏳ Tiempo total: {total_time} segundos")
