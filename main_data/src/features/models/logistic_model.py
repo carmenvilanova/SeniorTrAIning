@@ -66,7 +66,9 @@ def logistic_regression_game01(data:pd.DataFrame, score_target: str):
     # Define params grid and scoring metrics
     params = {
         "C": [0.01, 0.05, 0.1, 0.2, 0.5, 1], 
-        "class_weight": [None, "balanced"]
+        "class_weight": ["balanced"], 
+        "solver": ["lbfgs", "newton-cg", "sag", "saga"], 
+        "max_iter": [100, 150, 200, 250, 300]
     }
 
     scoring_metrics = ["accuracy", "precision", "recall", "balanced_accuracy", "roc_auc"]
