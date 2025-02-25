@@ -11,7 +11,7 @@ def main():
         st.session_state['logged_in'] = False
     if 'page' not in st.session_state:
         st.session_state['page'] = 'login'  # Página por defecto
-
+        
     # Controlar la navegación
     if st.session_state['logged_in']:
         if st.session_state['page'] == 'login':
@@ -22,17 +22,14 @@ def main():
             st.write("Página de Cálculo (en construcción)")  
             if st.button("Volver"):
                 st.session_state['page'] = 'login'  
-                st.rerun()
         elif st.session_state['page'] == 'reflejos':
             st.write("Página de Reflejos (en construcción)")  
             if st.button("Volver"):
                 st.session_state['page'] = 'login'  
-                st.rerun()
         elif st.session_state['page'] == 'reaccion':
             st.write("Página de reaccion (en construcción)")  
             if st.button("Volver"):
                 st.session_state['page'] = 'login'  
-                st.rerun()
 
                 
     else:

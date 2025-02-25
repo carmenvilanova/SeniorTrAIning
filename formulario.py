@@ -90,6 +90,16 @@ def registration_page():
     with st.form(key='registration_form'):
         username = st.text_input("Nombre de usuario")
         password = st.text_input("Contraseña", type="password")
+
+        # Campo para nivel educativo
+        education_level = st.selectbox("Nivel educativo máximo alcanzado", ["Primaria", "Secundaria", "Universidad"])
+
+        # Campo para género
+        gender = st.radio("Género", ["Masculino", "Femenino", "Otro", "Prefiero no decirlo"])
+
+        # Campo para cantidad de idiomas hablados
+        languages_spoken = st.selectbox("¿Cuántos idiomas hablas?", ["1", "2", "3 o más"])
+
         submit_button = st.form_submit_button("Registrarse")
         
         # Botones de navegación
