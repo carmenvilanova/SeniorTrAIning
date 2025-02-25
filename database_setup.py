@@ -25,4 +25,4 @@ CREATE TABLE IF NOT EXISTS users (
 conn.commit()
 conn.close()
 
-print("Base de datos creada correctamente con los nuevos campos.")
+print("Base de datos creada correctamente.")
