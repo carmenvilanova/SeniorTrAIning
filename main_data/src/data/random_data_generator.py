@@ -127,39 +127,42 @@ def estimate_languages_spoken(age: float, education_level: str) -> str:
 
 
 def generate_reaction_time(age: float, education_level: str):
-
-    #random.seed(123)
-    #np.random.seed(123)
-
-    # Define influence of age
+    # Define influence of age (younger -> better reaction times)
     if age <= 30: 
-        coef = 0.01 
-    elif age > 30 and age <= 50: 
-        coef = 0.02 
-    elif age > 50 and age <= 65:
-        coef = 0.025
-    elif age > 65 and age <= 75:
-        coef = 0.035
-    else :
-        coef = 0.045
-    
+        coef = 0.5  
+    elif age <= 50: 
+        coef = 1.0  
+    elif age <= 65:
+        coef = 1.5  
+    elif age <= 75:
+        coef = 2.0  
+    elif age <= 85:
+        coef = 2.5 
+    elif age <= 95:
+        coef = 3.0 
+    else:
+        coef = 3.5 
+
     # Adjust for education level
     if education_level == "University": 
-        intercept = 1
-
+        intercept = 1.0
     elif education_level == 'High School':
         intercept = 1.5
-    
     elif education_level == 'Primary School':
-        intercept = 2
+        intercept = 2.0
 
+    # Add noise
+    noise_e = np.random.normal(0, 0.5)  # Reduced to avoid extreme values
 
-    # Add error
-    noise_e = np.random.normal(size=1)
+    # Compute raw reaction time
+    react_time = (coef * (age / 100)) + intercept + noise_e  
 
-    # Estimate reaction time
-    react_time = 0.1 * ((coef*age) + (coef*age*age) + intercept + noise_e)
-    return(react_time[0])
+    # Normalize to the 2-10 seconds range
+    min_raw = 0.5  # Estimated minimum possible value
+    max_raw = 5.0  # Estimated maximum possible value
+    react_time = 2 + (react_time - min_raw) / (max_raw - min_raw) * 8
+
+    return max(2, min(10, react_time))  # Ensure the value stays within the range
 
 def generate_accuracy(age, education_level): 
 
@@ -211,11 +214,11 @@ def generate_cog_state(time, accuracy, time_ref, accuracy_ref):
     if time > time_ref and accuracy < accuracy_ref: 
         probs = [0.65, 0.25, 0.1]
     elif time > time_ref and accuracy > accuracy_ref:
-        probs = [0.6, 0.3, 0.1]
+        probs = [0.4, 0.5, 0.1]
     elif time < time_ref and accuracy > accuracy_ref:
         probs = [0.05, 0.2, 0.75]
     else: # time < time_ref and accuracy < accuracy_ref
-        probs = [0.1, 0.25, 0.65]
+        probs = [0.1, 0.6, 0.3]
 
     
 
