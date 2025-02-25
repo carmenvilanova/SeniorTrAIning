@@ -37,7 +37,7 @@ def load_new_question():
 # Función decorada para cargar el modelo de Machine Learning
 @st.cache_data
 def cargar_modelo_y_vectorizador():
-    modelo = joblib.load('modelo.pkl')  # Carga el modelo
+    modelo = joblib.load('models\modelo.pkl')  # Carga el modelo
     return modelo
 
 # 🔹 Iniciar juego
@@ -82,15 +82,14 @@ def load_emotions():
     </div>
     """.format(round(time.time() - st.session_state.start_time, 2), st.session_state.current_attempt), unsafe_allow_html=True)
 
-    # Fin del juego
+        # Fin del juego
     if st.session_state.current_attempt > 10:
         total_time = round(time.time() - st.session_state.start_time, 2)
         corrects = st.session_state.correct_answers
         age = 60
-        average_time = 0.86
-        education_level_High_School = 1
+        education_level_High_School = 0
         education_level_Primary_School = 0
-        education_level_University = 0
+        education_level_University = 1
         gender_Female = 0
         gender_Male = 1
         gender_Other = 0
@@ -98,13 +97,21 @@ def load_emotions():
         languages_spoken_2 = 1
         gender = 1
         accuracy = corrects / 10
+        languages_spoken_3 = 0  # Usamos un nombre de variable válido
+
         average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
 
-        df = pd.DataFrame([[age, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2]], 
-                          columns=['age', 'average_time', 'accuracy', 'education_level_High School', 'education_level_Primary School', 'education_level_University',
-                                   'gender_Female', 'gender_Male', 'gender_Other', 'languages_spoken_1', 'languages_spoken_2'])
+        # Crear el DataFrame con nombres de columnas válidos
+        df = pd.DataFrame([[age, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2, languages_spoken_3]], 
+                        columns=['age', 'average_time', 'accuracy', 'education_level_High School', 'education_level_Primary School', 'education_level_University',
+                                'gender_Female', 'gender_Male', 'gender_Other', 'languages_spoken_1', 'languages_spoken_2', 'languages_spoken_3'])
+
+        # Renombrar la columna para que coincida con el nombre esperado por el modelo
+        df.rename(columns={'languages_spoken_3': 'languages_spoken_3+'}, inplace=True)
+
         # Predecir con el modelo
         nivel_cognitivo = st.session_state.ml_model.predict(df)[0]
+        probabilidades = st.session_state.ml_model.predict_proba(df)[0]
 
         # Mostrar resultados en un div con recuadro gris
         st.markdown("""
@@ -113,10 +120,10 @@ def load_emotions():
             <p>✅ Aciertos: {}</p>
             <p>⏳ Tiempo total: {} segundos</p>
             <p>🧠 **Nivel Cognitivo Estimado**: {}</p>
+            <p>🔢 **Probabilidades de la Puntuación Recibida**: {}</p>
             <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="window.location.reload();">🔄 Jugar de nuevo</button>
         </div>
-        """.format(corrects, total_time, nivel_cognitivo), unsafe_allow_html=True)
-
+        """.format(corrects, total_time, nivel_cognitivo, probabilidades), unsafe_allow_html=True)
     else:
         # Mostrar la imagen y las opciones de respuesta
         st.markdown("""
