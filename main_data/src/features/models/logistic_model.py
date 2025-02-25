@@ -13,9 +13,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score, confusion_matrix,roc_curve, auc, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score, balanced_accuracy_score, roc_auc_score, confusion_matrix,roc_curve, auc, ConfusionMatrixDisplay
+from sklearn.utils.class_weight import compute_class_weight
 
-def logistic_regression_game01(data:pd.DataFrame):
+def logistic_regression_game01(data:pd.DataFrame, score_target: str):
     # Load data
     main_data = data # Acá debería ser el cargue del archivo de datos
     main_data["cog_level"].value_counts() # Check
@@ -64,16 +65,20 @@ def logistic_regression_game01(data:pd.DataFrame):
 
     # Define params grid and scoring metrics
     params = {
-        "C": [0.1, 0.5, 1]
+        "C": [0.01, 0.05, 0.1, 0.2, 0.5, 1], 
+        "class_weight": [None, "balanced"]
     }
-    scoring_metrics = ["accuracy", "precision", "recall"]
+
+    scoring_metrics = ["accuracy", "precision", "recall", "balanced_accuracy", "roc_auc"]
 
     # Set model and train
-    logit_model = LogisticRegression(random_state=123, fit_intercept=False) # Falso porque tenemos dummies para todas las categorías
-    model = GridSearchCV(estimator=logit_model, cv=4, param_grid=params, refit="accuracy", scoring=scoring_metrics)
+    logit_model = LogisticRegression(random_state=123, multi_class="multinomial",
+                                     fit_intercept=False) # Falso porque tenemos dummies para todas las categorías
+    model = GridSearchCV(estimator=logit_model, cv=4, param_grid=params, refit=score_target, scoring=scoring_metrics)
     model.fit(X_train_sc, y_train) 
     # Get best model and evaluate
     best_model = model.best_estimator_
+    best_model.fit(X_train_sc, y_train)
 
     preds = best_model.predict(X_test_sc)
     # preds_proba = best_model.predict_proba(X_test) # To get probabilities for each class
@@ -82,9 +87,6 @@ def logistic_regression_game01(data:pd.DataFrame):
     recall = recall_score(y_test, preds, average="weighted")
     f1 = f1_score(y_test, preds, average="weighted")
 
-    # print(f"Accuracy: {accuracy}")
-    # print(f"Recall: {recall}")
-    # print(f"F1: {f1}")
     # CM
     # print(confusion_matrix(y_test, preds, labels=model.classes_))
 
@@ -95,6 +97,10 @@ def logistic_regression_game01(data:pd.DataFrame):
     plt.show()
     # Guardar el modelo entrenado
     # joblib.dump(best_model, "../../modelo.pkl")
+
+    print(f"Accuracy: {accuracy}")
+    print(f"Recall: {recall}")
+    print(f"F1: {f1}")
 
     # Define the new path of the trained model
     model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../models/modelo.pkl"))

@@ -87,8 +87,8 @@ def estimate_languages_spoken(age: float, education_level: str) -> str:
     Returns:
     - str: Estimated number of languages ​​spoken ('1', '2', or '3+').
     """
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Definir probabilidades base para cada edad
     if age < 30:
@@ -128,17 +128,17 @@ def estimate_languages_spoken(age: float, education_level: str) -> str:
 
 def generate_reaction_time(age: float, education_level: str):
 
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Define influence of age
     if age <= 30: 
         coef = 0.01 
     elif age > 30 and age <= 50: 
         coef = 0.02 
-    elif age > 50 and age <= 60:
+    elif age > 50 and age <= 65:
         coef = 0.025
-    elif age > 60 and age <= 70:
+    elif age > 65 and age <= 75:
         coef = 0.035
     else :
         coef = 0.045
@@ -163,56 +163,61 @@ def generate_reaction_time(age: float, education_level: str):
 
 def generate_accuracy(age, education_level): 
 
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Define influence of age
-    if age <= 30: 
-        probs = [0.1, 0.15, .25, 0.5] 
-    elif age > 30 and age <= 50: 
-        probs = [0.15, 0.2, 0.3, 0.35] 
-    elif age > 50 and age <= 60:
-        probs = [0.2, 0.25, 0.35, 0.2]
-    elif age > 60 and age <= 70:
-        probs = [0.2, 0.35, 0.35, 0.1]
+    if age <= 50:
+
+        probs = [0.1, 0.4, 0.5]
+    elif age > 50 and age <= 65:
+        probs = [0.2, 0.35, 0.45]
+    elif age > 65 and age <= 70:
+        probs = [0.25, 0.45, 0.3]
+    elif age > 70 and age <= 75:
+        probs = [0.4, 0.4, 0.2]
     else :
-        probs = [0.25, 0.4, 0.25, .1]
+        probs = [0.55, 0.45, 0.1]
 
 
     # Adjust for education level
     if education_level == "University": 
-        probs = [p + adj for p, adj in zip(probs, [-0.05, -0.05, 0.1, 0.1])] 
+        probs = [p + adj for p, adj in zip(probs, [-0.05, 0.025, 0.025])] 
 
     elif education_level == 'High School':
-        probs = [p + adj for p, adj in zip(probs, [0.5, 0.05, -0.1, -0.15])] 
+        probs = [p + adj for p, adj in zip(probs, [0.1, -0.05, -0.05])] 
     
     elif education_level == 'Primary School':
-        probs = [p + adj for p, adj in zip(probs, [0.08, 0.08, -0.15, -0.2])] 
+        probs = [p + adj for p, adj in zip(probs, [0.2, -0.1, -0.1])] 
 
     # Ensure that the probabilities add up to 1
     probs = np.clip(probs, 0, 1) # Ensures that each probs value is in the range [0, 1]
     probs /= probs.sum() # Normalize the probabilities by dividing each value by the total sum of probs
+    probs
     
     # Generate random intervals of accuracy
-    acc_list = [random.uniform(0, 0.2), random.uniform(0.15, 0.45), random.uniform(0.3, 0.75), random.uniform(0.5, 1)]
+    acc_list = [random.uniform(0.05, 0.25),  random.uniform(0.15, 0.6), random.uniform(0.50, 1)]
+
 
     # Select interval
-    return np.random.choice(acc_list, p=probs)
+    return(np.random.choice(acc_list, p=probs))
 
 
 def generate_cog_state(time, accuracy, time_ref, accuracy_ref):
     
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     if time > time_ref and accuracy < accuracy_ref: 
-        probs = [0.75, 0.15, 0.1]
+        probs = [0.65, 0.25, 0.1]
     elif time > time_ref and accuracy > accuracy_ref:
         probs = [0.6, 0.3, 0.1]
     elif time < time_ref and accuracy > accuracy_ref:
         probs = [0.05, 0.2, 0.75]
     else: # time < time_ref and accuracy < accuracy_ref
         probs = [0.1, 0.25, 0.65]
+
+    
 
     return(np.random.choice(["Bajo", "Medio", "Alto"], p=probs)) # Cog. levels
 
