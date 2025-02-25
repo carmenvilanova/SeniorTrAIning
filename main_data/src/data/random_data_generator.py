@@ -2,7 +2,7 @@ import random
 import pandas as pd
 import random
 
-random.seed(123)
+#random.seed(123)
 
 def generate_dni():
     """
@@ -87,8 +87,8 @@ def estimate_languages_spoken(age: float, education_level: str) -> str:
     Returns:
     - str: Estimated number of languages ​​spoken ('1', '2', or '3+').
     """
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Definir probabilidades base para cada edad
     if age < 30:
@@ -128,8 +128,8 @@ def estimate_languages_spoken(age: float, education_level: str) -> str:
 
 def generate_reaction_time(age: float, education_level: str):
 
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Define influence of age
     if age <= 30: 
@@ -163,8 +163,8 @@ def generate_reaction_time(age: float, education_level: str):
 
 def generate_accuracy(age, education_level): 
 
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     # Define influence of age
     if age <= 30: 
@@ -202,8 +202,8 @@ def generate_accuracy(age, education_level):
 
 def generate_cog_state(time, accuracy, time_ref, accuracy_ref):
     
-    random.seed(123)
-    np.random.seed(123)
+    #random.seed(123)
+    #np.random.seed(123)
 
     if time > time_ref and accuracy < accuracy_ref: 
         probs = [0.75, 0.15, 0.1]
