@@ -87,9 +87,9 @@ def load_emotions():
         total_time = round(time.time() - st.session_state.start_time, 2)
         corrects = st.session_state.correct_answers
         age = 60
-        education_level_High_School = 0
+        education_level_High_School = 1
         education_level_Primary_School = 0
-        education_level_University = 1
+        education_level_University = 0
         gender_Female = 0
         gender_Male = 1
         gender_Other = 0
@@ -100,6 +100,8 @@ def load_emotions():
         languages_spoken_3 = 0  # Usamos un nombre de variable válido
 
         average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
+        average_time = 30
+        print(average_time, accuracy)
 
         # Crear el DataFrame con nombres de columnas válidos
         df = pd.DataFrame([[age, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2, languages_spoken_3]], 
@@ -113,17 +115,27 @@ def load_emotions():
         nivel_cognitivo = st.session_state.ml_model.predict(df)[0]
         probabilidades = st.session_state.ml_model.predict_proba(df)[0]
 
+        # Redondear las probabilidades a 3 dígitos
+        probabilidades_redondeadas = [round(prob, 3) for prob in probabilidades]
+
+        # Crear una tabla de probabilidades
+        prob_df = pd.DataFrame({
+            'Clase': st.session_state.ml_model.classes_,
+            'Probabilidad': probabilidades_redondeadas
+        })
+
         # Mostrar resultados en un div con recuadro gris
         st.markdown("""
         <div style="text-align: center; padding: 20px; background-color: white; border-radius: 10px; border: 2px solid #FFFFFF;">
             <h3>🎉 ¡Juego Completado!</h3>
             <p>✅ Aciertos: {}</p>
             <p>⏳ Tiempo total: {} segundos</p>
-            <p>🧠 **Nivel Cognitivo Estimado**: {}</p>
-            <p>🔢 **Probabilidades de la Puntuación Recibida**: {}</p>
+            <p>🧠 Nivel Cognitivo Estimado: {}</p>
+            <p>🔢 Probabilidades de la Puntuación Recibida:</p>
+            {}
             <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="window.location.reload();">🔄 Jugar de nuevo</button>
         </div>
-        """.format(corrects, total_time, nivel_cognitivo, probabilidades), unsafe_allow_html=True)
+        """.format(corrects, total_time, nivel_cognitivo, prob_df.to_html(index=False)), unsafe_allow_html=True)
     else:
         # Mostrar la imagen y las opciones de respuesta
         st.markdown("""
