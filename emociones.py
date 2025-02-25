@@ -3,6 +3,27 @@ import random
 import time
 import joblib
 import pandas as pd
+import sqlite3
+from datetime import datetime
+
+# 🔹 Función para calcular la edad
+def calcular_edad(fecha_nacimiento):
+    """Calcula la edad a partir de la fecha de nacimiento."""
+    hoy = datetime.today()
+    edad = hoy.year - fecha_nacimiento.year
+    if (hoy.month, hoy.day) < (fecha_nacimiento.month, fecha_nacimiento.day):
+        edad -= 1
+    return edad
+
+# 🔹 Función para obtener datos del usuario desde la base de datos
+def get_user_data(username):
+    """Obtiene los datos del usuario desde la base de datos."""
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+    user_data = cursor.fetchone()
+    conn.close()
+    return user_data
 
 # 🔹 Cargar datos del juego
 def load_game_data():
@@ -37,7 +58,7 @@ def load_new_question():
 # Función decorada para cargar el modelo de Machine Learning
 @st.cache_data
 def cargar_modelo_y_vectorizador():
-    modelo = joblib.load('models\modelo.pkl')  # Carga el modelo
+    modelo = joblib.load('models/modelo.pkl')  # Carga el modelo
     return modelo
 
 # 🔹 Iniciar juego
@@ -58,7 +79,34 @@ def init_game():
 def load_emotions():
     init_game()
 
-     # Mostrar el título del juego pequeño a la izquierda y el logo con el nombre de la app a la derecha
+    # Obtener los datos del usuario desde la base de datos
+    username = st.session_state.get('username')  # Asegúrate de que el nombre de usuario esté en st.session_state
+    user_data = get_user_data(username)
+
+    if user_data:
+        # Calcular la edad a partir de la fecha de nacimiento
+        fecha_nacimiento = datetime.strptime(user_data[6], "%Y-%m-%d")  # Índice 6 es birth_date
+        edad = calcular_edad(fecha_nacimiento)
+
+        # Extraer los datos del usuario
+        education_level = user_data[7]  # nivel_educativo
+        gender = user_data[8]  # genero
+        languages_spoken = user_data[9]  # cantidad_idiomas
+
+        # Convertir los datos a variables dummy para el modelo
+        education_level_High_School = 1 if education_level == "Secundaria" else 0
+        education_level_Primary_School = 1 if education_level == "Primaria" else 0
+        education_level_University = 1 if education_level == "Universidad" else 0
+
+        gender_Female = 1 if gender == "Femenino" else 0
+        gender_Male = 1 if gender == "Masculino" else 0
+        gender_Other = 1 if gender == "Otro" else 0
+
+        languages_spoken_1 = 1 if languages_spoken == "1" else 0
+        languages_spoken_2 = 1 if languages_spoken == "2" else 0
+        languages_spoken_3 = 1 if languages_spoken == "3 o más" else 0
+
+    # Mostrar el título del juego pequeño a la izquierda y el logo con el nombre de la app a la derecha
     st.markdown("""
         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 20px; padding: 10px; background-color: white; border-radius: 8px;">
             <div style="flex: 2; text-align: left; padding-right: 10px;">
@@ -82,29 +130,15 @@ def load_emotions():
     </div>
     """.format(round(time.time() - st.session_state.start_time, 2), st.session_state.current_attempt), unsafe_allow_html=True)
 
-        # Fin del juego
+    # Fin del juego
     if st.session_state.current_attempt > 10:
         total_time = round(time.time() - st.session_state.start_time, 2)
         corrects = st.session_state.correct_answers
-        age = 60
-        education_level_High_School = 1
-        education_level_Primary_School = 0
-        education_level_University = 0
-        gender_Female = 0
-        gender_Male = 1
-        gender_Other = 0
-        languages_spoken_1 = 0
-        languages_spoken_2 = 1
-        gender = 1
         accuracy = corrects / 10
-        languages_spoken_3 = 0  # Usamos un nombre de variable válido
-
         average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
-        average_time = 30
-        print(average_time, accuracy)
 
-        # Crear el DataFrame con nombres de columnas válidos
-        df = pd.DataFrame([[age, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2, languages_spoken_3]], 
+        # Crear el DataFrame con los datos del usuario
+        df = pd.DataFrame([[edad, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2, languages_spoken_3]], 
                         columns=['age', 'average_time', 'accuracy', 'education_level_High School', 'education_level_Primary School', 'education_level_University',
                                 'gender_Female', 'gender_Male', 'gender_Other', 'languages_spoken_1', 'languages_spoken_2', 'languages_spoken_3'])
 
