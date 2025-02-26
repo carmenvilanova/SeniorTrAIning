@@ -94,15 +94,12 @@ def load_emotions():
         languages_spoken = user_data[9]  # cantidad_idiomas
 
         # Convertir los datos a variables dummy para el modelo
-        education_level_High_School = 1 if education_level == "Secundaria" else 0
         education_level_Primary_School = 1 if education_level == "Primaria" else 0
         education_level_University = 1 if education_level == "Universidad" else 0
 
-        gender_Female = 1 if gender == "Femenino" else 0
         gender_Male = 1 if gender == "Masculino" else 0
         gender_Other = 1 if gender == "Otro" else 0
 
-        languages_spoken_1 = 1 if languages_spoken == "1" else 0
         languages_spoken_2 = 1 if languages_spoken == "2" else 0
         languages_spoken_3 = 1 if languages_spoken == "3 o más" else 0
 
@@ -138,9 +135,9 @@ def load_emotions():
         average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
 
         # Crear el DataFrame con los datos del usuario
-        df = pd.DataFrame([[edad, average_time, accuracy, education_level_High_School, education_level_Primary_School, education_level_University, gender_Female, gender_Male, gender_Other, languages_spoken_1, languages_spoken_2, languages_spoken_3]], 
-                        columns=['age', 'average_time', 'accuracy', 'education_level_High School', 'education_level_Primary School', 'education_level_University',
-                                'gender_Female', 'gender_Male', 'gender_Other', 'languages_spoken_1', 'languages_spoken_2', 'languages_spoken_3'])
+        df = pd.DataFrame([[edad, average_time, accuracy, education_level_Primary_School, education_level_University, gender_Male, gender_Other,  languages_spoken_2, languages_spoken_3]], 
+                        columns=['age', 'average_time', 'accuracy', 'education_level_Primary School', 'education_level_University',
+                             'gender_Male', 'gender_Other', 'languages_spoken_2', 'languages_spoken_3'])
 
         # Renombrar la columna para que coincida con el nombre esperado por el modelo
         df.rename(columns={'languages_spoken_3': 'languages_spoken_3+'}, inplace=True)

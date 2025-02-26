@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from openai import OpenAI
+#from openai import OpenAI
 from dotenv import load_dotenv  # Para cargar la API Key desde un archivo .env
 
 # Cargar las variables de entorno desde el archivo .env
