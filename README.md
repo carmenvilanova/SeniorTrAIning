@@ -23,6 +23,20 @@ python database_setup.py
 > 📝 **Nota:** Verifica que todas las dependencias necesarias estén instaladas.
 
 ---
+## 🔑 Configuración del archivo .env
+Para que la aplicación funcione correctamente, es necesario configurar un archivo ```bash .env ``` con la API Key de OpenAI. Sigue estos pasos:
+
+1. Crea un archivo ```bash .env ``` en la raíz del proyecto.
+
+2. Añade la API Key de OpenAI en el archivo ```bash .env ``` de la siguiente manera:
+
+```bash 
+OPENAI_API_KEY=sk-tu_clave_api_aquí
+```
+> 📝 **Nota:** Reemplaza ```bash sk-tu_clave_api_aquí ``` con tu clave API de OpenAI. Si no tienes una, regístrate en OpenAI y genera una clave.
+3. Guarda el archivo. Asegúrate de que el archivo ```bash .env ``` no se suba al repositorio (está incluido en ```bash .gitignore ``` por defecto).
+
+---
 
 ## 🚀 Ejecutar la aplicación
 Para iniciar la aplicación con Streamlit, usa el siguiente comando:
