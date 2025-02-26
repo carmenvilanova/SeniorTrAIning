@@ -4,6 +4,7 @@ import login
 import menu
 import formulario 
 import emociones
+import Ia_juego
 
 def main():
     # Inicializar el estado de sesión si no existe
@@ -18,18 +19,12 @@ def main():
             menu.home_page()
         elif st.session_state['page'] == 'emociones':
             emociones.load_emotions()
-        elif st.session_state['page'] == 'calculo':
-            st.write("Página de Cálculo (en construcción)")  
+        elif st.session_state['page'] == 'adivinar_ano':
+            st.write("Página de Adivinar año (en construcción)")  
             if st.button("Volver"):
                 st.session_state['page'] = 'login'  
-        elif st.session_state['page'] == 'reflejos':
-            st.write("Página de Reflejos (en construcción)")  
-            if st.button("Volver"):
-                st.session_state['page'] = 'login'  
-        elif st.session_state['page'] == 'reaccion':
-            st.write("Página de reaccion (en construcción)")  
-            if st.button("Volver"):
-                st.session_state['page'] = 'login'  
+        elif st.session_state['page'] == 'ia_juego':
+            Ia_juego.load_ia_game() 
 
                 
     else:
