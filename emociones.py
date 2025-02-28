@@ -122,18 +122,20 @@ def load_emotions():
             <span>⏳ Tiempo de juego: {} segundos</span>
         </div>
         <div style="flex: 1; text-align: right; padding-right: 10px;">
-            <span>Ronda {}/10</span>
+            <span>Ronda {}/5</span>
         </div>
     </div>
     """.format(round(time.time() - st.session_state.start_time, 2), st.session_state.current_attempt), unsafe_allow_html=True)
 
     # Fin del juego
-    if st.session_state.current_attempt > 10:
+    # Fin del juego
+    if st.session_state.current_attempt == 5:
         total_time = round(time.time() - st.session_state.start_time, 2)
         corrects = st.session_state.correct_answers
-        accuracy = corrects / 10
-        average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 10
+        accuracy = corrects / 5
+        average_time = sum([resp["Tiempo de reacción"] for resp in st.session_state.responses]) / 5
 
+    #
         # Crear el DataFrame con los datos del usuario
         df = pd.DataFrame([[edad, average_time, accuracy, education_level_Primary_School, education_level_University, gender_Male, gender_Other,  languages_spoken_2, languages_spoken_3]], 
                         columns=['age', 'average_time', 'accuracy', 'education_level_Primary School', 'education_level_University',
@@ -155,18 +157,53 @@ def load_emotions():
             'Probabilidad': probabilidades_redondeadas
         })
 
-        # Mostrar resultados en un div con recuadro gris
+                # Mapeo de los niveles cognitivos
+        nivel_cognitivo_str = ""
+        if nivel_cognitivo == 0:
+            nivel_cognitivo_str = "Alto"
+        elif nivel_cognitivo == 1:
+            nivel_cognitivo_str = "Medio"
+        elif nivel_cognitivo == 2:
+            nivel_cognitivo_str = "Bajo"
+
+        # Mapeo de los valores 0, 1, 2 a Bajo, Medio, Alto
+        prob_df['Clase'] = prob_df['Clase'].map({0: 'Alto', 1: 'Medio', 2: 'Bajo'})
+
+        # Mostrar resultados con el nivel cognitivo traducido
         st.markdown("""
-        <div style="text-align: center; padding: 20px; background-color: white; border-radius: 10px; border: 2px solid #FFFFFF;">
-            <h3>🎉 ¡Juego Completado!</h3>
-            <p>✅ Aciertos: {}</p>
-            <p>⏳ Tiempo total: {} segundos</p>
-            <p>🧠 Nivel Cognitivo Estimado: {}</p>
-            <p>🔢 Probabilidades de la Puntuación Recibida:</p>
-            {}
-            <button style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer;" onclick="window.location.reload();">🔄 Jugar de nuevo</button>
-        </div>
-        """.format(corrects, total_time, nivel_cognitivo, prob_df.to_html(index=False)), unsafe_allow_html=True)
+            <div style="text-align: center; padding: 20px; background-color: white; border-radius: 10px; border: 2px solid #FFFFFF;">
+                <h3>🎉 ¡Juego Completado!</h3>
+                <p>✅ Aciertos: {}</p>
+                <p>⏳ Tiempo total: {} segundos</p>
+                <p>🧠 Nivel Cognitivo Estimado: {}</p>
+                <p>🔢 Probabilidades de la Puntuación Recibida:</p>
+            </div>
+            """.format(corrects, total_time, nivel_cognitivo_str), unsafe_allow_html=True)
+
+        # Mostrar tabla de probabilidades centrada
+        st.markdown("""
+            <div style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+                <div style="text-align: center; background-color: white; border-radius: 10px; border: 2px solid #FFFFFF; padding: 20px; width: 100%; max-width: 800px;">
+                    <h4>Probabilidades de la Puntuación Recibida</h4>
+                    <div style="margin-left: auto; margin-right: auto;">
+                        {}
+                    </div>
+                </div>
+            </div>
+        """.format(prob_df.to_html(index=False, escape=False)), unsafe_allow_html=True)
+
+
+        # Botón "Jugar de nuevo"
+        if st.button('🔄 Jugar de nuevo'):
+            # Reiniciar el estado del juego
+            st.session_state.clear()  # Limpiar todo el estado
+            init_game()  # Iniciar de nuevo
+
+        # Botón "Volver al menú"
+        if st.button('🏠 Volver al menú'):
+            # Reiniciar el juego
+            st.session_state['page'] = 'login'  # Regresar al menú
+            st.rerun()
     else:
         # Mostrar la imagen y las opciones de respuesta
         st.markdown("""
@@ -221,7 +258,10 @@ def load_emotions():
                 else:
                     st.error(f"❌ Incorrecto. La respuesta correcta era: {st.session_state.correct_answer} (Tiempo de respuesta: {reaction_time} segundos)")
 
-                st.session_state.current_attempt += 1
+                # Incrementar intentos solo si no hemos alcanzado la ronda máxima (5 rondas)
+                if st.session_state.current_attempt < 5:
+                        st.session_state.current_attempt += 1
+
                 time.sleep(1)
                 load_new_question()
                 st.rerun()

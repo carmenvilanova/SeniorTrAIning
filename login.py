@@ -58,4 +58,4 @@ def login_page():
             st.rerun()
 
         st.markdown("</div>", unsafe_allow_html=True)
-        st.image("img/logo.png", width=650)
+        st.image("img/logo.jpg", width=650)
